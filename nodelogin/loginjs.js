@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var ejs = require ("ejs");
 var date = require('date-and-time');
+var formidable = require('formidable');
 var now = new Date();
 
   var val=date.format(new Date(), 'DD-MM-YYYY');
@@ -47,8 +48,6 @@ app.get('/login',function(request,response){
 app.post('/login', function(request, response) {
   var username = request.body.username;
   var password = request.body.pass;
-  console.log(username);
-  console.log(password);
   if (username && password) {
     connection.query('SELECT * FROM login WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
       if (results.length > 0) {
@@ -108,12 +107,12 @@ app.post('/signup', function(request, response) {
 
 
 app.get('/main', authCheck, function(request,response){
-  console.log(request.session.loggedin);
-  console.log(request.session);
+  //console.log(request.session.loggedin);
+  //console.log(request.session);
   query = "select * from data ";
   connection.query(query, function(err, result, field){
-    console.log(result);
-    query2 = "SELECT * FROM data LIMIT 3;";
+    //console.log(result);
+    query2 = "SELECT * FROM data LIMIT 5;";
     connection.query(query2, function(err, result2, field){
     //response.redirect("/main");
     response.render("main",{result:result,result2:result2});
@@ -163,14 +162,14 @@ console.log(request.session.username);
 app.post('/search/:ques', authCheck, function(request, response) {
   var answ =request.body.answer;
   var doubt=request.params.ques;
-console.log(request.session.username);
-  console.log(request.params.ques);
+//console.log(request.session.username);
+  //console.log(request.params.ques);
   connection.query("INSERT INTO data VALUES (?,?,?,?)",[doubt,answ,request.session.username,val],function(err,result2,field){
   });
-  console.log("question ask is "+ doubt);
+  //console.log("question ask is "+ doubt);
   query = "select * from data where question = '" + doubt + "'";
   connection.query(query, function(err, result, field){
-    console.log(result);
+    //console.log(result);
     //response.redirect("/main");
     response.render("ans",{result:result})
   });
@@ -207,11 +206,11 @@ app.get("/search", authCheck, (req, res)=>{
              }
          else{
           res.render("ans", {result:result2})
-                 }
+              }
       })
     }
   }
-  });
+});
 
   app.get('/search/:id', authCheck,function(request,response){
     console.log(request.session.loggedin);
